@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <sys/types.h> 
 #include <sys/wait.h>
+#include <readline/readline.h>
 
 
 // TODO: add your function prototypes here as necessary
@@ -21,11 +22,7 @@ int main(){
 	//       SIGCHLD here
 
 	while(1) {
-		// (1) print the shell prompt
-		fprintf(stdout, "tosh$ ");  
-		fflush(stdout);
-
-		// (2) read in the next command entered by the user
+		// (1) read in the next command entered by the user
 		char *cmdline = readline("tosh$ ");
 
 		// NULL indicates EOF was reached, which in this case means someone
@@ -38,9 +35,9 @@ int main(){
 		fprintf(stdout, "DEBUG: %s\n", cmdline);
 
 		// TODO: complete the following top-level steps
-		// (3) parse the cmdline
+		// (2) parse the cmdline
 
-		// (4) determine how to execute it, and then execute it
+		// (3) determine how to execute it, and then execute it
 
 	}
 
