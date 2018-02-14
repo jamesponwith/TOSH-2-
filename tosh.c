@@ -23,12 +23,21 @@
 
 pid_t Fork(void);
 void unix_error(char *msg);
+void execCmd(char *argv[], int ret);
 void child_handler(__attribute__ ((unused)) int sig); 
 
 int main(){ 
 
+	
 	// TODO: add a call to signal to register your signal handler on 
 	//       SIGCHLD here
+	
+
+	struct sigaction sa;
+	sa.sa_handler = child_handler;
+	sa.sa_flags = SA_NOCLDSTOP;
+	sigaction(SIGCHLD, &sa, NULL);
+
 
 	while(1) {
 		// (1) read in the next command entered by the user
@@ -53,10 +62,19 @@ int main(){
 	return 0;
 }
 
+
+/**
+ * Prints out a message if an error has occured
+ *
+ * @param *msg A message to be displayed to address
+ * the error that has occured
+ */
 void unix_error(char *msg) {
     fprintf(stderr, "%s: %s\n", msg, strerror(errno));
     exit(0);
 }
+
+
 
 /*
  * Error handling for the fork() function
@@ -68,6 +86,29 @@ pid_t Fork(void) {
     }
     return pid;
 }
+
+/**
+ * Execute commands in argv
+ * @param argv Command line arguments
+ * @param ret Determines if command to run in the foreground
+ * or background
+ */
+void execCmd(char *argv[], int ret) {
+	int status;
+	pid_t child_pid;
+	if((child_pid = Fork()) == 0) {
+		setpgid(0,0);
+		if(execv(argv[0], argv) == -1) {
+			fprintf(stdout, "ERROR: command not found\n");
+			exit(0);
+		}
+	}
+	else if {
+		waitpid(child_pid, &status, 0); // Wait for child
+	}
+}
+
+
 
 /*
  * Handles the child and makes the parent process wait
