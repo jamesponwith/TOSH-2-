@@ -23,6 +23,7 @@
 
 pid_t Fork(void);
 void unix_error(char *msg);
+void child_handler(__attribute__ ((unused)) int sig); 
 
 int main(){ 
 
