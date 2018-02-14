@@ -1,5 +1,5 @@
 /*
- * The Torero Shell (TOSH)
+ * The Not-So-Tiny Torero Shell (TOSH)
  *
  * Add your top-level comments here.
  */
