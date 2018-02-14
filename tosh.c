@@ -18,12 +18,17 @@
 #include <sys/errno.h>
 #include <readline/readline.h>
 
+#include "parse_args.h"
+
 // TODO: add your function prototypes here as necessary
 
 pid_t Fork(void);
 void unix_error(char *msg);
 void execCmd(char *argv[], int ret);
 void child_handler(__attribute__ ((unused)) int sig); 
+
+static void printBG(int bg);
+static void printCommandArgs(char *cmdline, char **argv);
 
 int main(){ 
 	
@@ -49,6 +54,20 @@ int main(){
 
 		// TODO: complete the following top-level steps
 		// (2) parse the cmdline
+		char **args = NULL;
+		int bg = 0;
+
+		unsigned int i = 0;
+		args = parseArgumentsDynamic(cmdline, &bg);
+		if (args) {
+			printCommandArgs(cmdline, args);
+			printBG(bg);
+			while(args[i] != NULL) {
+				free(args[i]);
+				i++;
+			}
+			free(args);
+		}
 		// (3) determine how to execute it, and then execute it
 	}
 	return 0;
@@ -109,3 +128,32 @@ void child_handler(__attribute__ ((unused)) int sig) {
     int status;
     while ((pid = waitpid(pid, &status, WNOHANG)) != -1) {}
 }
+
+/**
+ * This function prints the the background status of the 
+ * command
+ *
+ */
+void printBG(int bg) {
+	if(bg) {
+		printf("run in the background is true\n");
+	} else {
+		printf("rund in the background is false\n");
+	}
+}
+
+/**
+ *
+ */
+void printCommandArgs(char *cmdline, char **argv) {
+	printf("\nCommand line: %s\n", cmdline);
+
+	unsigned i = 0;
+	while(argv[i] != NULL) {
+		printf("%3d	#%s#\n", i, argv[i]);
+		i++;
+	}
+}
+
+
+
