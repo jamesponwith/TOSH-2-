@@ -6,17 +6,17 @@
 
 #define _XOPEN_SOURCE 600
 
+#include <stdio.h>
 #include <ctype.h>
 #include <libgen.h>
 #include <signal.h>
-#include <readline/readline.h>
-#include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/errno.h>
-#include <sys/types.h> 
 #include <sys/wait.h>
-#include <unistd.h>
+#include <sys/types.h> 
+#include <sys/errno.h>
+#include <readline/readline.h>
 
 // TODO: add your function prototypes here as necessary
 
