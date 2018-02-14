@@ -7,8 +7,8 @@ TOSH_SRC = tosh.c parse_args.c
 
 all: $(TARGETS)
 
-ttsh: $(TOSH_SRC) parse_args.o
-	$(CC) $(CFLAGS) -o $@ $(TOSH_SRC) parse_args.o
+ttsh: $(TOSH_SRC) parse_args.h
+	$(CC) $(CFLAGS) -o $@ tosh.c parse_args.c  
 
 siesta: siesta.c
 	$(CC) $(CFLAGS) -o $@ $^
