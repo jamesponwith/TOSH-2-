@@ -47,7 +47,26 @@ int main(){
 
 	while(1) {
 		// (1) read in the next command entered by the user
-		char *cmdline = readline("tosh$ ");
+		char cmdline[MAXLINE];	
+		
+		//char *cmdline = readline("tosh$ ");
+	
+		// fgets instead of readline, attempt to fix the makefile error
+		//
+		// this was not causing the error but leaving it for choice later
+		// between fgets and readline
+		if((fgets(cmdline,MAXLINE, stdin) == NULL) && ferror(stdin)) {
+			clearerr(stdin);
+			continue;
+		}
+		if(feof(stdin)) {
+			fflush(stdout);
+			exit(0);
+		}
+		if(shellEntry(cmdline) == 1) {
+			continue;
+		}
+	
 		// NULL indicates EOF was reached, which in this case means someone
 		// probably typed in CTRL-d
 		if (cmdline == NULL) {
