@@ -54,11 +54,20 @@ int main(){
 
 		// TODO: complete the following top-level steps
 		// (2) parse the cmdline
-		char **args = NULL;
+		//char **args = NULL;
+		char *argv[MAXARGS];
 		int bg = 0;
 
-		unsigned int i = 0;
-		args = parseArgumentsDynamic(cmdline, &bg);
+		//unsigned int i = 0;
+		bg = parseArguments(cmdline, argv);
+		if((argv[0] != NULL) && (strcmp(argv[0], "quit") == 0)) {
+			break;
+		}	
+
+		printCommandArgs(cmdline, argv);
+		printBG(bg);
+		/*
+		//args = parseArgumentsDynamic(cmdline, &bg);
 		if (args) {
 			printCommandArgs(cmdline, args);
 			printBG(bg);
@@ -68,6 +77,7 @@ int main(){
 			}
 			free(args);
 		}
+		*/
 		// (3) determine how to execute it, and then execute it
 	}
 	return 0;
