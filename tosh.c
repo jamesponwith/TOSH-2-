@@ -62,7 +62,7 @@ void unix_error(char *msg) {
  * Error handling for the fork() function
  */
 pid_t Fork(void) {
-    pid_t pid;
+    pid_t pid = 0;
     if ((pid = fork()) < 0) {
         unix_error("Fork error");     
     }
@@ -77,7 +77,7 @@ pid_t Fork(void) {
  * @param int sig Attribute unused
  */
 void child_handler(__attribute__ ((unused)) int sig) {
-    pid_t pid;
+    pid_t pid = 0;
     int status;
     while ((pid = waitpid(pid, &status, WNOHANG)) != -1) {}
 }
