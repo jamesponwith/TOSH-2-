@@ -4,17 +4,25 @@
  * Add your top-level comments here.
  */
 
+#define _XOPEN_SOURCE 600
+
+#include <ctype.h>
+#include <libgen.h>
+#include <signal.h>
+#include <readline/readline.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <unistd.h>
+#include <sys/errno.h>
 #include <sys/types.h> 
 #include <sys/wait.h>
-#include <readline/readline.h>
+#include <unistd.h>
 
 
 // TODO: add your function prototypes here as necessary
 
+pid_t Fork(void);
+void unix_error(char *msg);
 
 int main(){ 
 
@@ -42,4 +50,33 @@ int main(){
 	}
 
 	return 0;
+}
+
+void unix_error(char *msg) {
+    fprintf(stderr, "%s: %s\n", msg, strerror(errno));
+    exit(0);
+}
+
+/*
+ * Error handling for the fork() function
+ */
+pid_t Fork(void) {
+    pid_t pid;
+    if ((pid = fork()) < 0) {
+        unix_error("Fork error");     
+    }
+    return pid;
+}
+
+/*
+ * Handles the child and makes the parent process wait
+ * as the child process executes. Additionally, waitpid
+ * reaps all children.
+ *
+ * @param int sig Attribute unused
+ */
+void child_handler(__attribute__ ((unused)) int sig) {
+    pid_t pid;
+    int status;
+    while ((pid = waitpid(pid, &status, WNOHANG)) != -1) {}
 }
