@@ -8,7 +8,8 @@
  * TODO list:
  *		(1) Convert execvp to execv
  *			(1a) build argv list for execv -- look at project info
- *		(2) built in commands - cd, exit, history, !num, !!
+ *		(2) built in commands - cd, exit, history, !num, !! 
+ *			(All done except '!!' command)
  *		(3) io redirection
  *		(4) pipes
  *		(5) constant testing
