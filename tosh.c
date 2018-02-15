@@ -84,6 +84,7 @@ int main(){
         //unsigned int i = 0;
         bg = parseArguments(cmdline, argv);
         if((argv[0] != NULL) && (strcmp(argv[0], "quit") == 0)) {
+			free(cmdline);
             break;
         }	
 
