@@ -49,6 +49,7 @@ int main(){
 
 
         char *cmdline = readline("tosh$ ");
+
         // fgets instead of readline, attempt to fix the makefile error
         //
         // this was not causing the error but leaving it for choice later
@@ -100,7 +101,8 @@ int main(){
         free(args);
         }
         */
-        // (3) determine how to execute it, and then execute it
+        // TODO:(3) determine how to execute it, and then execute it
+		free(cmdline);
     }
     return 0;
 }
