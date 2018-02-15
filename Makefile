@@ -7,7 +7,7 @@ TOSH_SRC = history_queue.c parse_args.c tosh.c
 
 all: $(TARGETS)
 
-ttsh: $(TOSH_SRC) history_queue.h parse_args.h
+tosh: $(TOSH_SRC) history_queue.h parse_args.h
 	$(CC) $(CFLAGS) -o $@ $(TOSH_SRC)   
 
 siesta: siesta.c
