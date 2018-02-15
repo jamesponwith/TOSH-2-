@@ -19,114 +19,90 @@
 #include <readline/readline.h>
 
 #include "parse_args.h"
+#include "wrappers.h"
 #include "history_queue.h"
 
 // TODO: add your function prototypes here as necessary
 
-pid_t Fork(void);
 void cd(char *argv[]);
-void unix_error(char *msg);
 void nextDir(char *argv[]);
 int isBuiltin(char *argv[]);
 int isBangNum(char cmd[MAXLINE]);
 int shellEntry(char cmdline[MAXLINE]);
 void execCmd(char *argv[], int ret);
-void child_handler(__attribute__ ((unused)) int sig); 
 static void printBG(int bg);
 static void printCommandArgs(char *cmdline, char **argv);
 
 int main(){ 
-	
-	// TODO: add a call to signal to register your signal handler on 
-	//       SIGCHLD here
 
-	struct sigaction sa;
-	sa.sa_handler = child_handler;
-	sa.sa_flags = SA_NOCLDSTOP;
-	sigaction(SIGCHLD, &sa, NULL);
+    // TODO: add a call to signal to register your signal handler on 
+    //       SIGCHLD here
 
-	while(1) {
-		// (1) read in the next command entered by the user
-		char cmdline[MAXLINE];	
-		
-		//char *cmdline = readline("tosh$ ");
-	
-		// fgets instead of readline, attempt to fix the makefile error
-		//
-		// this was not causing the error but leaving it for choice later
-		// between fgets and readline
-		if((fgets(cmdline,MAXLINE, stdin) == NULL) && ferror(stdin)) {
-			clearerr(stdin);
-			continue;
-		}
-		if(feof(stdin)) {
-			fflush(stdout);
-			exit(0);
-		}
-		if(shellEntry(cmdline) == 1) {
-			continue;
-		}
-	
-		// NULL indicates EOF was reached, which in this case means someone
-		// probably typed in CTRL-d
-		if (cmdline == NULL) {
-			fflush(stdout);
-			exit(0);
-		}
+    struct sigaction sa;
+    sa.sa_handler = child_handler;
+    sa.sa_flags = SA_NOCLDSTOP;
+    sigaction(SIGCHLD, &sa, NULL);
 
-		fprintf(stdout, "DEBUG: %s\n", cmdline);
+    while(1) {
+        // (1) read in the next command entered by the user
+        /** char cmdline[MAXLINE];	 */
 
-		// TODO: complete the following top-level steps
-		// (2) parse the cmdline
-		//char **args = NULL;
-		char *argv[MAXARGS];
-		int bg = 0;
 
-		//unsigned int i = 0;
-		bg = parseArguments(cmdline, argv);
-		if((argv[0] != NULL) && (strcmp(argv[0], "quit") == 0)) {
-			break;
-		}	
+        char *cmdline = readline("tosh$ ");
+        // fgets instead of readline, attempt to fix the makefile error
+        //
+        // this was not causing the error but leaving it for choice later
+        // between fgets and readline
+        /** if((fgets(cmdline,MAXLINE, stdin) == NULL) && ferror(stdin)) { */
+        /**     clearerr(stdin); */
+        /**     continue; */
+        /** } */
+        /** if(feof(stdin)) { */
+        /**     fflush(stdout); */
+        /**     exit(0); */
+        /** } */
+        /** if(shellEntry(cmdline) == 1) { */
+        /**     continue; */
+        /** } */
+        /**  */
+        // NULL indicates EOF was reached, which in this case means someone
+        // probably typed in CTRL-d
+        if (cmdline == NULL) {
+            fflush(stdout);
+            exit(0);
+        }
 
-		printCommandArgs(cmdline, argv);
-		printBG(bg);
-		/*
-		//args = parseArgumentsDynamic(cmdline, &bg);
-		if (args) {
-			printCommandArgs(cmdline, args);
-			printBG(bg);
-			while(args[i] != NULL) {
-				free(args[i]);
-				i++;
-			}
-			free(args);
-		}
-		*/
-		// (3) determine how to execute it, and then execute it
-	}
-	return 0;
-}
+        fprintf(stdout, "DEBUG: %s\n", cmdline);
 
-/**
- * Prints out a message if an error has occured
- *
- * @param *msg A message to be displayed to address
- * the error that has occured
- */
-void unix_error(char *msg) {
-    fprintf(stderr, "%s: %s\n", msg, strerror(errno));
-    exit(0);
-}
+        // TODO: complete the following top-level steps
+        // (2) parse the cmdline
+        //char **args = NULL;
+        char *argv[MAXARGS];
+        int bg = 0;
 
-/*
- * Error handling for the fork() function
- */
-pid_t Fork(void) {
-    pid_t pid = 0;
-    if ((pid = fork()) < 0) {
-        unix_error("Fork error");     
+        //unsigned int i = 0;
+        bg = parseArguments(cmdline, argv);
+        if((argv[0] != NULL) && (strcmp(argv[0], "quit") == 0)) {
+            break;
+        }	
+
+        printCommandArgs(cmdline, argv);
+        printBG(bg);
+        /*
+        //args = parseArgumentsDynamic(cmdline, &bg);
+        if (args) {
+        printCommandArgs(cmdline, args);
+        printBG(bg);
+        while(args[i] != NULL) {
+        free(args[i]);
+        i++;
+        }
+        free(args);
+        }
+        */
+        // (3) determine how to execute it, and then execute it
     }
-    return pid;
+    return 0;
 }
 
 /**
@@ -136,31 +112,18 @@ pid_t Fork(void) {
  * or background
  */
 void execCmd(char *argv[], int ret) {
-	int status;
-	pid_t child_pid;
-	if((child_pid = Fork()) == 0) {
-		setpgid(0,0);
-		if(execvp(argv[0], argv) == -1) {
-			fprintf(stdout, "ERROR: command not found\n");
-			exit(0);
-		}
-	}
-	else if (ret == 0) { // Foreground
-		waitpid(child_pid, &status, 0); // Wait for child
-	}
-}
-
-/*
- * Handles the child and makes the parent process wait
- * as the child process executes. Additionally, waitpid
- * reaps all children.
- *
- * @param int sig Attribute unused
- */
-void child_handler(__attribute__ ((unused)) int sig) {
-    pid_t pid = 0;
     int status;
-    while ((pid = waitpid(pid, &status, WNOHANG)) != -1) {}
+    pid_t child_pid;
+    if((child_pid = Fork()) == 0) {
+        setpgid(0,0);
+        if(execvp(argv[0], argv) == -1) {
+            fprintf(stdout, "ERROR: command not found\n");
+            exit(0);
+        }
+    }
+    else if (ret == 0) { // Foreground
+        waitpid(child_pid, &status, 0); // Wait for child
+    }
 }
 
 /**
@@ -169,72 +132,72 @@ void child_handler(__attribute__ ((unused)) int sig) {
  *
  */
 void printBG(int bg) {
-	if(bg) {
-		printf("run in the background is true\n");
-	} else {
-		printf("rund in the background is false\n");
-	}
+    if(bg) {
+        printf("run in the background is true\n");
+    } else {
+        printf("rund in the background is false\n");
+    }
 }
 
 /**
  *
  */
 void printCommandArgs(char *cmdline, char **argv) {
-	printf("\nCommand line: %s\n", cmdline);
+    printf("\nCommand line: %s\n", cmdline);
 
-	unsigned i = 0;
-	while(argv[i] != NULL) {
-		printf("%3d	#%s#\n", i, argv[i]);
-		i++;
-	}
+    unsigned i = 0;
+    while(argv[i] != NULL) {
+        printf("%3d	#%s#\n", i, argv[i]);
+        i++;
+    }
 }
 
 /**
  *
  */
 void cd(char *argv[]) {
-	if(argv[1] == NULL) {
-		chdir(getenv("HOME"));
-		return;
-	} 
-	else if (chdir(argv[1]) == -1) { 
-		fprintf(stdout, "directory does not exist\n");
-	}
-	return;
+    if(argv[1] == NULL) {
+        chdir(getenv("HOME"));
+        return;
+    } 
+    else if (chdir(argv[1]) == -1) { 
+        fprintf(stdout, "directory does not exist\n");
+    }
+    return;
 }
 
 /**
  *
  */
 void nextDir(char *argv[]) { 
-	char cwd[MAXLINE];
-	char *new_cwd = NULL;
-	getcwd(cwd, sizeof(cwd));
+    char cwd[MAXLINE];
+    char *new_cwd = NULL;
+    getcwd(cwd, sizeof(cwd));
 
-	new_cwd = strcat(cwd, "/");
-	new_cwd = strcat(new_cwd, argv[1]);
+    new_cwd = strcat(cwd, "/");
+    new_cwd = strcat(new_cwd, argv[1]);
 
-	return;
+    return;
 }
 
 /**
  *
  */
 int isBuiltIn(char *argv[]){  
-	if (strcmp(argv[0], "exit") == 0) {
-		fprintf(stdout, "Adios mi amigo...\n");
-		exit(0);
-	}
-	else if (strcmp(argv[0], "history") == 0) {
-		//printHistory();
-		return 1;
-	}
-	else if (strcmp(argv[0], "cd") == 0) {
-		cd(argv);
-		return 1;
-	}
-	
-	return 0; 
+    if (strcmp(argv[0], "exit") == 0) {
+        fprintf(stdout, "Adios mi amigo...\n");
+        exit(0);
+    }
+    else if (strcmp(argv[0], "history") == 0) {
+        //printHistory();
+        return 1;
+    }
+    else if (strcmp(argv[0], "cd") == 0) {
+        cd(argv);
+        return 1;
+    }
+
+    return 0; 
 }
 
 
@@ -242,22 +205,22 @@ int isBuiltIn(char *argv[]){
  *
  */
 int isBangNum(char cmd[MAXLINE]) { 
-	int ret = 1;
-	if (cmd[0] == '!') {
-		memmove(cmd,cmd+1,strlen(cmd));
-		//ret = numToCmd(cmd);
-	}
-	
-	return ret; 
+    int ret = 1;
+    if (cmd[0] == '!') {
+        memmove(cmd,cmd+1,strlen(cmd));
+        //ret = numToCmd(cmd);
+    }
+
+    return ret; 
 }
 
 /**
  *
  */
 int shellEntry(char cmdline[MAXLINE]) { 
-	if(cmdline == NULL) {
-		return 1;
-	}
-	return 0; 
+    if(cmdline == NULL) {
+        return 1;
+    }
+    return 0; 
 }
 
