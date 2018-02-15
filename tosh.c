@@ -69,22 +69,6 @@ int main(){
 
         char *cmdline = readline("tosh$ ");
 
-        // fgets instead of readline, attempt to fix the makefile error
-        //
-        // this was not causing the error but leaving it for choice later
-        // between fgets and readline
-        /** if((fgets(cmdline,MAXLINE, stdin) == NULL) && ferror(stdin)) { */
-        /**     clearerr(stdin); */
-        /**     continue; */
-        /** } */
-        /** if(feof(stdin)) { */
-        /**     fflush(stdout); */
-        /**     exit(0); */
-        /** } */
-        /** if(shellEntry(cmdline) == 1) { */
-        /**     continue; */
-        /** } */
-        /**  */
         // NULL indicates EOF was reached, which in this case means someone
         // probably typed in CTRL-d
         if (cmdline == NULL) {
@@ -98,42 +82,14 @@ int main(){
 		
 		#endif
 
-        // TODO: complete the following top-level steps
         // (2) parse the cmdline
-        //char **args = NULL;
         
 		char cmd[sizeof(cmdline)];
 		strcpy(cmd, cmdline);
-		//cmd = strdup(cmdline);
 		if(shellEntry(cmd) == 1) {
 			continue;
 		}
-		
-		/*
-		char *argv[MAXARGS];
-        int bg = 0;
 
-        //unsigned int i = 0;
-        bg = parseArguments(cmdline, argv);
-
-        printCommandArgs(cmdline, argv);
-        printBG(bg);
-        
-		*/
-
-
-		/*
-        //args = parseArgumentsDynamic(cmdline, &bg);
-        if (args) {
-        printCommandArgs(cmdline, args);
-        printBG(bg);
-        while(args[i] != NULL) {
-        free(args[i]);
-        i++;
-        }
-        free(args);
-        }
-        */
         // TODO:(3) determine how to execute it, and then execute it
 		free(cmdline);
     }
@@ -192,7 +148,7 @@ void execCmd(char *argv[], int ret) {
         setpgid(0,0);
         if(execvp(argv[0], argv) == -1) {
             fprintf(stdout, "ERROR: command not found\n");
-            exit(0);
+			exit(0);
         }
     }
     else if (ret == 0) { // Foreground
