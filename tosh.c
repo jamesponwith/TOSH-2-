@@ -33,6 +33,8 @@
 #include "parse_args.h"
 #include "history_queue.h"
 
+#define DEBUG 1 
+
 // TODO: add your function prototypes here as necessary
 
 void cd(char *argv[]);
@@ -84,8 +86,12 @@ int main(){
             fflush(stdout);
             exit(0);
         }
+		
+		#ifdef DEBUG
 
         fprintf(stdout, "DEBUG: %s\n", cmdline);
+		
+		#endif
 
         // TODO: complete the following top-level steps
         // (2) parse the cmdline
