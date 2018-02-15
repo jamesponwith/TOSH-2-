@@ -18,8 +18,8 @@
 #include <sys/errno.h>
 #include <readline/readline.h>
 
-#include "parse_args.h"
 #include "wrappers.h"
+#include "parse_args.h"
 #include "history_queue.h"
 
 // TODO: add your function prototypes here as necessary
