@@ -60,7 +60,7 @@ void printHistory() {
 	int j = front;
 	for (int i = 0; i < MAXHIST; i++) { // loop through MAXHIST number of times
 		if (strcmp("", history[j].cmdline) != 0) {
-			fprintf(stdout, "%u\t%s", history[j].cmd_num, history[j].cmdline);
+			fprintf(stdout, "%u\t%s\n", history[j].cmd_num, history[j].cmdline);
 		}
 		j++;
 		if (j == MAXHIST) {

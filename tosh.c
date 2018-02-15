@@ -79,7 +79,16 @@ int main(){
         // TODO: complete the following top-level steps
         // (2) parse the cmdline
         //char **args = NULL;
-        char *argv[MAXARGS];
+        
+		char cmd[MAXLINE];
+		strcpy(cmd, cmdline);
+		//cmd = strdup(cmdline);
+		if(shellEntry(cmd) == 1) {
+			continue;
+		}
+		
+		/*
+		char *argv[MAXARGS];
         int bg = 0;
 
         //unsigned int i = 0;
@@ -87,7 +96,11 @@ int main(){
 
         printCommandArgs(cmdline, argv);
         printBG(bg);
-        /*
+        
+		*/
+
+
+		/*
         //args = parseArgumentsDynamic(cmdline, &bg);
         if (args) {
         printCommandArgs(cmdline, args);
@@ -100,7 +113,6 @@ int main(){
         }
         */
         // TODO:(3) determine how to execute it, and then execute it
-		free(cmdline);
     }
     return 0;
 }
@@ -176,7 +188,9 @@ void nextDir(char *argv[]) {
 
     new_cwd = strcat(cwd, "/");
     new_cwd = strcat(new_cwd, argv[1]);
-
+	if(chdir(new_cwd) == -1) {
+		fprintf(stdout, "directory does not exist\n");
+	}
     return;
 }
 
@@ -196,7 +210,6 @@ int isBuiltIn(char *argv[]){
         cd(argv);
         return 1;
     }
-
     return 0; 
 }
 
@@ -208,9 +221,8 @@ int isBangNum(char cmd[MAXLINE]) {
     int ret = 1;
     if (cmd[0] == '!') {
         memmove(cmd,cmd+1,strlen(cmd));
-        //ret = numToCmd(cmd);
+        ret = numToCmd(cmd);
     }
-
     return ret; 
 }
 
@@ -218,9 +230,26 @@ int isBangNum(char cmd[MAXLINE]) {
  *
  */
 int shellEntry(char cmdline[MAXLINE]) { 
-    if(cmdline == NULL) {
-        return 1;
-    }
-    return 0; 
+    char *argv[MAXARGS];
+	int add = isBangNum(cmdline);
+	if(add == 0) {
+		fprintf(stdout, "ERROR: command not in history");
+		return 0;
+	}
+	
+	int ret = parseArguments(cmdline, argv);
+	printCommandArgs(cmdline, argv);
+	printBG(ret);
+	if(argv[0] == NULL) {
+		return 1;
+	}
+	if(add == 1) {
+		addEntry(cmdline);
+	}
+	if(isBuiltIn(argv) == 1) {
+		return 1;
+	}
+    execCmd(argv, ret);
+	return 0; 
 }
 
