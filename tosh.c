@@ -4,6 +4,16 @@
  * Add your top-level comments here.
  */
 
+/*
+ * TODO list:
+ *		(1) Convert execvp to execv
+ *			(1a) build argv list for execv -- look at project info
+ *		(2) built in commands - cd, exit, history, !num, !!
+ *		(3) io redirection
+ *		(4) pipes
+ *		(5) constant testing
+ */
+
 #define _XOPEN_SOURCE 600
 
 #include <stdio.h>
@@ -113,6 +123,7 @@ int main(){
         }
         */
         // TODO:(3) determine how to execute it, and then execute it
+		free(cmdline);
     }
     return 0;
 }
