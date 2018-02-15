@@ -37,7 +37,7 @@
 
 void cd(char *argv[]);
 void nextDir(char *argv[]);
-int isBuiltin(char *argv[]);
+int isBuiltIn(char *argv[]);
 int isBangNum(char cmd[MAXLINE]);
 int shellEntry(char cmdline[MAXLINE]);
 void execCmd(char *argv[], int ret);
@@ -91,7 +91,7 @@ int main(){
         // (2) parse the cmdline
         //char **args = NULL;
         
-		char cmd[MAXLINE];
+		char cmd[sizeof(cmdline)];
 		strcpy(cmd, cmdline);
 		//cmd = strdup(cmdline);
 		if(shellEntry(cmd) == 1) {
@@ -130,6 +130,45 @@ int main(){
 }
 
 /**
+ *
+ */
+int shellEntry(char cmdline[MAXLINE]) { 
+    char *argv[MAXARGS];
+	int add = isBangNum(cmdline);
+	if(add == 0) {
+		fprintf(stdout, "ERROR: command not in history");
+		return 0;
+	}
+	
+	int ret = parseArguments(cmdline, argv);
+	printCommandArgs(cmdline, argv);
+	printBG(ret);
+	if(argv[0] == NULL) {
+		return 1;
+	}
+	if(add == 1) {
+		addEntry(cmdline); // Function from history_queue
+	}
+	if(isBuiltIn(argv) == 1) {
+		return 1;
+	}
+    execCmd(argv, ret);
+	return 0; 
+}
+
+/**
+ *
+ */
+int isBangNum(char cmd[MAXLINE]) { 
+    int ret = 1;
+    if (cmd[0] == '!') {
+        memmove(cmd,cmd+1,strlen(cmd));
+        ret = numToCmd(cmd);
+    }
+    return ret; 
+}
+
+/**
  * Execute commands in argv
  * @param argv Command line arguments
  * @param ret Determines if command to run in the foreground
@@ -151,29 +190,22 @@ void execCmd(char *argv[], int ret) {
 }
 
 /**
- * This function prints the the background status of the 
- * command
  *
  */
-void printBG(int bg) {
-    if(bg) {
-        printf("run in the background is true\n");
-    } else {
-        printf("rund in the background is false\n");
+int isBuiltIn(char *argv[]){  
+    if (strcmp(argv[0], "exit") == 0) {
+        fprintf(stdout, "Adios mi amigo...\n");
+        exit(0);
     }
-}
-
-/**
- *
- */
-void printCommandArgs(char *cmdline, char **argv) {
-    printf("\nCommand line: %s\n", cmdline);
-
-    unsigned i = 0;
-    while(argv[i] != NULL) {
-        printf("%3d	#%s#\n", i, argv[i]);
-        i++;
+    else if (strcmp(argv[0], "history") == 0) {
+        printHistory();
+        return 1;
     }
+    else if (strcmp(argv[0], "cd") == 0) {
+        cd(argv);
+        return 1;
+    }
+    return 0; 
 }
 
 /**
@@ -207,61 +239,29 @@ void nextDir(char *argv[]) {
 }
 
 /**
+ * This function prints the the background status of the 
+ * command
  *
  */
-int isBuiltIn(char *argv[]){  
-    if (strcmp(argv[0], "exit") == 0) {
-        fprintf(stdout, "Adios mi amigo...\n");
-        exit(0);
+void printBG(int bg) {
+    if(bg) {
+        printf("run in the background is true\n");
+    } else {
+        printf("rund in the background is false\n");
     }
-    else if (strcmp(argv[0], "history") == 0) {
-        printHistory();
-        return 1;
-    }
-    else if (strcmp(argv[0], "cd") == 0) {
-        cd(argv);
-        return 1;
-    }
-    return 0; 
-}
-
-
-/**
- *
- */
-int isBangNum(char cmd[MAXLINE]) { 
-    int ret = 1;
-    if (cmd[0] == '!') {
-        memmove(cmd,cmd+1,strlen(cmd));
-        ret = numToCmd(cmd);
-    }
-    return ret; 
 }
 
 /**
  *
  */
-int shellEntry(char cmdline[MAXLINE]) { 
-    char *argv[MAXARGS];
-	int add = isBangNum(cmdline);
-	if(add == 0) {
-		fprintf(stdout, "ERROR: command not in history");
-		return 0;
-	}
-	
-	int ret = parseArguments(cmdline, argv);
-	printCommandArgs(cmdline, argv);
-	printBG(ret);
-	if(argv[0] == NULL) {
-		return 1;
-	}
-	if(add == 1) {
-		addEntry(cmdline);
-	}
-	if(isBuiltIn(argv) == 1) {
-		return 1;
-	}
-    execCmd(argv, ret);
-	return 0; 
+void printCommandArgs(char *cmdline, char **argv) {
+    printf("\nCommand line: %s\n", cmdline);
+
+    unsigned i = 0;
+    while(argv[i] != NULL) {
+        printf("%3d	#%s#\n", i, argv[i]);
+        i++;
+    }
 }
+
 
