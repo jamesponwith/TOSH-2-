@@ -13,6 +13,11 @@
  *		(3) io redirection
  *		(4) pipes
  *		(5) constant testing
+ *		(6) ensure malformed and null command line input is handled
+ *		(7) string parsing goal is to provide args for execv(cmd_name,
+ *															 cmd_list) 
+ *			(7a) args are (String of command, complete path to executable)
+ *		(8)	 												 
  */
 
 #define _XOPEN_SOURCE 600
