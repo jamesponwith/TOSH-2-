@@ -84,10 +84,6 @@ int main(){
 
         //unsigned int i = 0;
         bg = parseArguments(cmdline, argv);
-        if((argv[0] != NULL) && (strcmp(argv[0], "exit") == 0)) {
-			free(cmdline);
-            break;
-        }	
 
         printCommandArgs(cmdline, argv);
         printBG(bg);
