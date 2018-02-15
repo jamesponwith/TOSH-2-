@@ -30,6 +30,7 @@ int isBuiltin(char *argv[]);
 int isBangNum(char cmd[MAXLINE]);
 int shellEntry(char cmdline[MAXLINE]);
 void execCmd(char *argv[], int ret);
+
 static void printBG(int bg);
 static void printCommandArgs(char *cmdline, char **argv);
 
@@ -83,7 +84,7 @@ int main(){
 
         //unsigned int i = 0;
         bg = parseArguments(cmdline, argv);
-        if((argv[0] != NULL) && (strcmp(argv[0], "quit") == 0)) {
+        if((argv[0] != NULL) && (strcmp(argv[0], "exit") == 0)) {
 			free(cmdline);
             break;
         }	
@@ -192,7 +193,7 @@ int isBuiltIn(char *argv[]){
         exit(0);
     }
     else if (strcmp(argv[0], "history") == 0) {
-        //printHistory();
+        printHistory();
         return 1;
     }
     else if (strcmp(argv[0], "cd") == 0) {
