@@ -57,10 +57,13 @@ void addEntry(char new_cmd[MAXLINE]) {
  * the most recent 10 commands
  */
 void printHistory(int num_to_print) {
-	int j = front;
+	int j = front + num_to_print;
+	/*int j = front - MAXHIST + num_to_print;*/
 	if (num_to_print > MAXHIST || num_to_print < 0) {
 		num_to_print = MAXHIST;
 	}
+	/*int j = MAXHIST - num_to_print + 2;*/
+	/*int i = MAXHIST - num_to_print; */
 	for (int i = 0; i < num_to_print; i++) { // loop through num_to_print number of times
 		if (strcmp("", history[j].cmdline) != 0) {
 			fprintf(stdout, "%u\t%s\n", history[j].cmd_num, history[j].cmdline);
