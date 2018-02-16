@@ -169,6 +169,7 @@ int isBuiltIn(char *argv[]){
         	printHistory(-1);
 		}
 		else if (isNumber(argv[1]) == 0) { // if its not a number
+			fprintf(stdout, "%s: %s: numeric argument required", argv[0], argv[1]); 
 			printHistory(-1);
 		}
 		else {
