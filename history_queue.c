@@ -56,9 +56,12 @@ void addEntry(char new_cmd[MAXLINE]) {
  * Loops through the history queue printing
  * the most recent 10 commands
  */
-void printHistory() {
+void printHistory(int num_to_print) {
 	int j = front;
-	for (int i = 0; i < MAXHIST; i++) { // loop through MAXHIST number of times
+	if (num_to_print > MAXHIST || num_to_print < 0) {
+		num_to_print = MAXHIST;
+	}
+	for (int i = 0; i < num_to_print; i++) { // loop through num_to_print number of times
 		if (strcmp("", history[j].cmdline) != 0) {
 			fprintf(stdout, "%u\t%s\n", history[j].cmd_num, history[j].cmdline);
 		}

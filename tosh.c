@@ -103,7 +103,7 @@ int shellEntry(char cmdline[MAXLINE]) {
     char *argv[MAXARGS];
 	int add = isBangNum(cmdline);
 	if(add == 0) {
-		fprintf(stdout, "ERROR: command not in history");
+		fprintf(stdout, "ERROR: command not in history\n");
 		return 0;
 	}
 	
@@ -165,7 +165,15 @@ int isBuiltIn(char *argv[]){
         exit(0);
     }
     else if (strcmp(argv[0], "history") == 0) {
-        printHistory();
+		if (argv[1] == NULL) {
+        	printHistory(-1);
+		}
+		else if (isNumber(argv[1]) == 0) { // if its not a number
+			printHistory(-1);
+		}
+		else {
+			printHistory(atoi(argv[1]));
+		}
         return 1;
     }
     else if (strcmp(argv[0], "cd") == 0) {

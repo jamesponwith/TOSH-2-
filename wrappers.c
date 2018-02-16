@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
@@ -40,4 +41,19 @@ void child_handler(__attribute__ ((unused)) int sig) {
     pid_t pid = 0;
     int status;
     while ((pid = waitpid(pid, &status, WNOHANG)) != -1) {}
+}
+
+int isNumber(char *number) {
+	int i = 0;
+
+	// checking for negative numbers
+	if (number[0] == '-') {
+		i = 1;
+	}
+	for (; number[i] !=0; i++) {
+		if (!isdigit(number[i])) {
+			return 0;
+		}
+	}
+	return 1;
 }
