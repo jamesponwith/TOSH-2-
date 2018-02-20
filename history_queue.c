@@ -21,9 +21,19 @@ static int cmd_count = 0;
 /*
  * Enables the '!num' syntax to execute
  * a command by the command number
+ *
+ * @ret 0 if command not in history
+ * @ret 1 if command is in history
  */
 //TODO: switch to int, return 1 if add to history
 int numToCmd(char *cmd) {
+	printf("cmd = %s\n", cmd);
+	if (strcmp(cmd, "latest") == 0) {
+		memset(cmd, 0, MAXLINE);
+		strcpy(cmd, history[rear - 1].cmdline);
+		printf("null thingy worked");
+		return 1;
+	}
 	unsigned int cmd_index = atoi(cmd);
 	for (int i = 0; i < MAXHIST; i++) { 
 		if (cmd_index == history[i].cmd_num) {

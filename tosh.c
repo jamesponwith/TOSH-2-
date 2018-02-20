@@ -107,6 +107,7 @@ int shellEntry(char cmdline[MAXLINE]) {
 		return 0;
 	}
 	
+	printf("command = %s\n", cmdline);
 	int ret = parseArguments(cmdline, argv);
 	/*printCommandArgs(cmdline, argv);*/
 	/*printBG(ret);*/
@@ -129,8 +130,11 @@ int shellEntry(char cmdline[MAXLINE]) {
 int isBangNum(char cmd[MAXLINE]) { 
     int ret = 1;
     if (cmd[0] == '!') {
-		if (cmd[1] == '!') {
+		if (cmd[1] == '!') { //add error checking
 			printf("double thing\n");
+			memset(cmd, 0, MAXLINE);
+			memcpy(cmd, "latest", 6);
+			return numToCmd(cmd);
 		}
         memmove(cmd,cmd+1,strlen(cmd));
         ret = numToCmd(cmd);
