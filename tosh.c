@@ -49,8 +49,8 @@ int isBangNum(char cmd[MAXLINE]);
 int shellEntry(char cmdline[MAXLINE]);
 void execCmd(char *argv[], int ret);
 
-static void printBG(int bg);
-static void printCommandArgs(char *cmdline, char **argv);
+/*static void printBG(int bg);*/
+/*static void printCommandArgs(char *cmdline, char **argv);*/
 
 int main(){ 
 
@@ -76,11 +76,11 @@ int main(){
             exit(0);
         }
 		
-		#ifdef DEBUG
+		/*#ifdef DEBUG*/
 
-        fprintf(stdout, "DEBUG: %s\n", cmdline);
+        /*fprintf(stdout, "DEBUG: %s\n", cmdline);*/
 		
-		#endif
+		/*#endif*/
 
         // (2) parse the cmdline
         
@@ -108,8 +108,8 @@ int shellEntry(char cmdline[MAXLINE]) {
 	}
 	
 	int ret = parseArguments(cmdline, argv);
-	printCommandArgs(cmdline, argv);
-	printBG(ret);
+	/*printCommandArgs(cmdline, argv);*/
+	/*printBG(ret);*/
 	if(argv[0] == NULL) {
 		return 1;
 	}
@@ -129,6 +129,9 @@ int shellEntry(char cmdline[MAXLINE]) {
 int isBangNum(char cmd[MAXLINE]) { 
     int ret = 1;
     if (cmd[0] == '!') {
+		if (cmd[1] == '!') {
+			printf("double thing\n");
+		}
         memmove(cmd,cmd+1,strlen(cmd));
         ret = numToCmd(cmd);
     }
