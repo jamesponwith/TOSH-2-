@@ -45,6 +45,7 @@
 void cd(char *argv[]);
 void nextDir(char *argv[]);
 int isBuiltIn(char *argv[]);
+int cmdlineLength(char *argv[]);
 int isBangNum(char cmd[MAXLINE]);
 int shellEntry(char cmdline[MAXLINE]);
 void execCmd(char *argv[], int ret);
@@ -145,18 +146,39 @@ int isBangNum(char cmd[MAXLINE]) {
  * or background
  */
 void execCmd(char *argv[], int ret) {
-    int status;
+	int status;
     pid_t child_pid;
-    if((child_pid = Fork()) == 0) {
+
+	char *token = (char*)malloc(1024);
+    char *path = (char*)malloc(1024);
+	strcpy(path, getenv("PATH"));
+	
+	int i = 0;
+	char *ptr;
+    ptr	= strtok(path, ":");
+	strcpy(token, ptr);
+	while (1) {
+		strcat(token, "/");
+		strcat(token, argv[i]);
+		if((access(token, X_OK)) == 0) {
+			break;
+		}
+		ptr = strtok(NULL, ":");
+		strcpy(token, ptr);
+	}
+	free(path);
+	if((child_pid = Fork()) == 0) {
         setpgid(0,0);
-        if(execvp(argv[0], argv) == -1) {
+		if(execv(token, argv) == -1) {
             fprintf(stdout, "ERROR: command not found\n");
+			free(token);
 			exit(0);
         }
     }
     else if (ret == 0) { // Foreground
         waitpid(child_pid, &status, 0); // Wait for child
     }
+	free(token);
 }
 
 /**
@@ -243,4 +265,10 @@ void printCommandArgs(char *cmdline, char **argv) {
     }
 }
 
-
+int cmdlineLength(char *argv[]) {
+	unsigned int i = 0;
+	while(argv[i] != NULL) {
+		i++; 
+	}
+	return i;
+}
