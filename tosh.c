@@ -160,16 +160,20 @@ void execCmd(char *argv[], int ret) {
 	int i = 0;
 	char *ptr;
     ptr	= strtok(path, ":");
-	strcpy(token, ptr);
-	while (1) {
+	//strcpy(token, ptr);
+	do {
+	//while(ptr != NULL) {
+	//while (1) {
+		strcpy(token, ptr);
 		strcat(token, "/");
 		strcat(token, argv[i]);
 		if((access(token, X_OK)) == 0) {
 			break;
 		}
 		ptr = strtok(NULL, ":");
-		strcpy(token, ptr);
-	}
+		//strcpy(token, ptr);
+	}while(ptr != NULL);
+
 	free(path);
 	if((child_pid = Fork()) == 0) {
         setpgid(0,0);
